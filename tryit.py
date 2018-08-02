@@ -48,11 +48,11 @@ while True:
         connectionnum=get_connection_id(line)
         connection_name=get_openstack_name(connectionnum)
         print (connection_name)
-        if connection[connection_name] is NULL:
-            connection[connection_name] = 0
-        if connection[connection_name] <= 0:
-            connection[connection_name] = 1
+        if connections[connection_name] is NULL:
+            connections[connection_name] = 0
+        if connections[connection_name] <= 0:
+            connections[connection_name] = 1
         else:
-            connection[connection_name] = connection[connection_name] + 1
-        print connection[connection_name]
+            connections[connection_name] = connections[connection_name] + 1
+        print connections[connection_name]
 
