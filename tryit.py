@@ -37,8 +37,7 @@ def addconnection(line):
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       print connections[connection_name]
-
-    def removeconnection(line):
+def removeconnection(line):
       connectionnum=get_connection_id(line)
       connection_name=str(get_openstack_name(connectionnum))
       print (connection_name)
