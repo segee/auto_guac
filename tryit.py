@@ -46,7 +46,7 @@ while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
         connectionnum=get_connection_id(line)
-        connection_name=get_openstack_name(connectionnum)
+        connection_name=str(get_openstack_name(connectionnum))
         print (connection_name)
         if connections[connection_name] is NULL:
             connections[connection_name] = 0
