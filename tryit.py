@@ -10,7 +10,7 @@ def get_connection_id( line):
     user = line[q1+1:q2]
     conn_num = line[q3+1:q4]
     return conn_num
-def get_openstack_name(conn_num)
+def get_openstack_name(conn_num):
     mydb=mysql.connector.connect(host="localhost",user="root",password=something,database="guacamole_db)
     mycursor=mydb.cursor
     sql="select parameter_value from guacamole_connection_parameter where guacamole_connection_parameter.parameter_id = 'hostname' and guacamole_connection_parameter.connection_id=%d"
