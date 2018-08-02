@@ -15,6 +15,7 @@ def get_openstack_name(conn_num):
     mydb=mysql.connector.connect(host="localhost",user="root",password="lame",database="guacamole_db")
     mycursor=mydb.cursor()
     sql="select parameter_value from guacamole_connection_parameter where guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.connection_id='$conn_num'"
+    print (sql)
     mycursor.execute(sql)
     myresult=mycursor.fetchone() # or can use mycursor.fetchall
     return myresult
