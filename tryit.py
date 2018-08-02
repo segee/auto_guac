@@ -25,9 +25,30 @@ def get_openstack_name(conn_num):
     print (sql)
     mycursor.execute(sql)
     myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
-    
     return myresult
+def addconnection(line):
+      connectionnum=get_connection_id(line)
+      connection_name=str(get_openstack_name(connectionnum))
+      print (connection_name)
+      if connection_name not in connections:  # first encounter
+            connections[str(connection_name)] = 0 #initialize
+      if connections[connection_name] <= 0:
+            connections[connection_name] = 1 # we just connected
+      else:
+            connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
+      print connections[connection_name]
 
+    def removeconnection(line):
+      connectionnum=get_connection_id(line)
+      connection_name=str(get_openstack_name(connectionnum))
+      print (connection_name)
+      if connection_name not in connections:  # disconnected from a machine we don't know about??
+            connections[str(connection_name)] = -5 #negative numbers mean shut off in the future
+      if connections[connection_name] <=1:
+            connections[connection_name] = -5 # connections gone
+      else:
+            connections[connection_name] = connections[connection_name] - 1  # if we have a connection, add one
+      print connections[connection_name]
 
 
 
@@ -45,14 +66,8 @@ line = logfile.stdout.readline()
 while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
-        connectionnum=get_connection_id(line)
-        connection_name=str(get_openstack_name(connectionnum))
-        print (connection_name)
-        if connection_name not in connections:
-            connections[str(connection_name)] = 0
-        if connections[connection_name] <= 0:
-            connections[connection_name] = 1
-        else:
-            connections[connection_name] = connections[connection_name] + 1
-        print connections[connection_name]
+        addconnection(line)
+    if 'disconnected from connection' in line:
+        removeconnection(line)
+       
 
