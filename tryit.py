@@ -4,6 +4,7 @@ import subprocess
 import mysql.connector
 
 dbpassword=raw_input("Please enter the mysql root password:  ")
+connections={}  # dictionary to store openstack names and number of active connections
 
 def get_connection_id( line):
     q1 = line.find("\"")
@@ -45,5 +46,13 @@ while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
         connectionnum=get_connection_id(line)
-        print (get_openstack_name(connectionnum))
+        connection_name=get_openstack_name(conectionnum)
+        print (connection_name)
+        if connection[connection_name] is NULL:
+            connection[connection_name] = 0
+        if connection[connection_name] <= 0:
+            connection[connection_name] = 1
+        else:
+            connection[connection_name] = connection[connection_name] + 1
+        print connection[connection_name]
 
