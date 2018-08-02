@@ -48,7 +48,7 @@ while True:
         connectionnum=get_connection_id(line)
         connection_name=str(get_openstack_name(connectionnum))
         print (connection_name)
-        if connections[str(connection_name)] is NULL:
+        if connection_name not in connections:
             connections[str(connection_name)] = 0
         if connections[connection_name] <= 0:
             connections[connection_name] = 1
