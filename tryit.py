@@ -36,6 +36,7 @@ logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],
 line = logfile.stdout.readline()                                 
 while True:
     line = logfile.stdout.readline()
-    connectionnum=get_connection_id(line)
-    print (get_openstack_name(connectionnum))
+    if 'connected to connection' in line:
+        connectionnum=get_connection_id(line)
+        print (get_openstack_name(connectionnum))
 
