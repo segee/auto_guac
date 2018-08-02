@@ -19,11 +19,11 @@ def get_openstack_name(conn_num):
     sql="select parameter_value from guacamole_connection_parameter where guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.connection_id= %d" % int(conn_num)
     print (sql)
     mycursor.execute(sql)
-    myresult=str(mycursor.fetchone()) # or can use mycursor.fetchall
+    myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
     sql="select connection_name from guacamole_connection join guacamole_connection_parameter where guacamole_connection.connection_id = guacammole_connection_parameter.connection_id and  guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.parameter_value= %s order by guacamole_connection.connection_id" % str(myresult)
     print (sql)
     mycursor.execute(sql)
-    myresult=str(mycursor.fetchone()) # or can use mycursor.fetchall
+    myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
     
     return myresult
 
