@@ -3,7 +3,7 @@
 import subprocess
 import mysql.connector
 
-dbpassword=input("Please enter the mysql root password")
+dbpassword=input_raw("Please enter the mysql root password:  ")
 
 def get_connection_id( line):
     q1 = line.find("\"")
