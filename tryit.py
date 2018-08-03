@@ -5,6 +5,7 @@ import mysql.connector
 
 dbpassword=raw_input("Please enter the mysql root password:  ")
 connections={}  # dictionary to store openstack names and number of active connections
+line='x'
 
 def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/guacamole-user/201802.mbox/%3C1519671051084-0.post@n4.nabble.com%3E
     q1 = line.find("\"")
@@ -48,20 +49,21 @@ def removeconnection(line):
       else:
             connections[connection_name] = connections[connection_name] - 1  # if we have a connection, add one
       print connections[connection_name]
+def every_minute():
+    if line = 'x':
+        print('one minute')
+        t=Timer(60,every_minute)
+    else :
+        print('ten seconds')
+        t=Timer(10,every_minute)
+    
 
 
 
 logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-#mydb=mysql.connector.connect(host="localhost",user="root",password="lame",database="guacamole_db")
-
-#mycursor=mydb.cursor()
-
-#mycursor.execute("select connection_name from guacamole_connection where connection_id=1")
-#myresult=mycursor.fetchone();
-#print myresult
-#print ""
-#print myresult[0]
-line = logfile.stdout.readline()                                 
+line = logfile.stdout.readline()
+line = 'x'
+t=Timer(60,every_minute)
 while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
