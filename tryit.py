@@ -6,7 +6,7 @@ import mysql.connector
 dbpassword=raw_input("Please enter the mysql root password:  ")
 connections={}  # dictionary to store openstack names and number of active connections
 
-def get_connection_id( line):
+def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/guacamole-user/201802.mbox/%3C1519671051084-0.post@n4.nabble.com%3E
     q1 = line.find("\"")
     q2 = line.find("\"",q1+1)
     q3 = line.find("\"",q2+1)
@@ -68,5 +68,8 @@ while True:
         addconnection(line)
     if 'disconnected from connection' in line:
         removeconnection(line)
+    print("line was ")
+    print line
+    line = "x"
        
 
