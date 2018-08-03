@@ -36,6 +36,7 @@ def addconnection(line):
             connections[str(connection_name)] = 0 #initialize
       if connections[connection_name] <= 0:
             connections[connection_name] = 1 # we just connected
+            print("This is where I'd start machine %s" % str(connection_name))
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       print connections[connection_name]
@@ -48,13 +49,19 @@ def removeconnection(line):
       if connections[connection_name] <=1:
             connections[connection_name] = -5 # connections gone
       else:
-            connections[connection_name] = connections[connection_name] - 1  # if we have a connection, add one
+            connections[connection_name] = connections[connection_name] - 1  # if we have multiple connections, remove one
       print connections[connection_name]
 def every_minute():
     if line == 'x':
         print('one minute')
         t=threading.Timer(60,every_minute)
         t.start()
+        for key in connections:
+             if connections[key] == -1:
+                connections[key]=0;
+                print("This is where I'd shut off machine %s" % key)
+             if connections[key] < -1 :
+                connections[key] = connections[key] + 1   
     else :
         print('ten seconds')
         t=threading.Timer(10,every_minute)
@@ -74,8 +81,8 @@ while True:
         addconnection(line)
     if 'disconnected from connection' in line:
         removeconnection(line)
-    print("line was ")
-    print line
+#    print("line was ")
+#    print line
     line = "x"
        
 
