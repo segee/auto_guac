@@ -50,7 +50,7 @@ def removeconnection(line):
             connections[connection_name] = connections[connection_name] - 1  # if we have a connection, add one
       print connections[connection_name]
 def every_minute():
-    if line = 'x':
+    if line == 'x':
         print('one minute')
         t=Timer(60,every_minute)
     else :
