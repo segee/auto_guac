@@ -2,6 +2,7 @@
 
 import subprocess
 import mysql.connector
+import threading
 
 dbpassword=raw_input("Please enter the mysql root password:  ")
 connections={}  # dictionary to store openstack names and number of active connections
@@ -52,10 +53,10 @@ def removeconnection(line):
 def every_minute():
     if line == 'x':
         print('one minute')
-        t=Timer(60,every_minute)
+        t=threading.Timer(60,every_minute)
     else :
         print('ten seconds')
-        t=Timer(10,every_minute)
+        t=threading.Timer(10,every_minute)
     
 
 
@@ -63,7 +64,8 @@ def every_minute():
 logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 line = logfile.stdout.readline()
 line = 'x'
-t=Timer(60,every_minute)
+t=threading.Timer(60,every_minute)
+t.start()
 while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
