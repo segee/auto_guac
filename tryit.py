@@ -54,9 +54,11 @@ def every_minute():
     if line == 'x':
         print('one minute')
         t=threading.Timer(60,every_minute)
+        t.start()
     else :
         print('ten seconds')
         t=threading.Timer(10,every_minute)
+        t.start()
     
 
 
