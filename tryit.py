@@ -38,8 +38,6 @@ connections={}  # dictionary to store openstack names and number of active conne
 logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 line = logfile.stdout.readline() # throw away line already in log to look for new lines 
 line = 'x'
-t=threading.Timer(60,every_minute)   # checks for timing out connections
-t.start()
 
 # parses guacamole connection number from line
 def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/guacamole-user/201802.mbox/%3C1519671051084-0.post@n4.nabble.com%3E
@@ -110,7 +108,8 @@ def every_minute():
 # This is the meat of it
 # look for connections and disconnections
 ##################################
-
+t=threading.Timer(60,every_minute)   # checks for timing out connections
+t.start()
 while True:
     line = logfile.stdout.readline()
     if 'connected to connection' in line:
