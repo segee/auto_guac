@@ -10,7 +10,7 @@ import os,sys,stat
 #two alternatives (commented out) follow
 ####################################
 filename="./dbpassword"
-os.chmod(filename, S_IREAD)
+os.chmod(filename, stst.S_IREAD)
 with open(filename) as fp:
     dbpassword=fp.readline()
     fp.close()
