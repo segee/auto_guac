@@ -41,14 +41,13 @@ line = 'x'
 
 # parses guacamole connection number from line
 def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/guacamole-user/201802.mbox/%3C1519671051084-0.post@n4.nabble.com%3E
-    q1 = line.find("\"")
+# Changed from searching for quotes alone to something slightly more robust
+    q1 = line.find("User \"")
     q2 = line.find("\"",q1+1)
-    q3 = line.find("\"",q2+1)
+    q3 = line.find("connection \"",q2+1)
     q4 = line.find("\"",q3+1)
     user = line[q1+1:q2]
     conn_num = line[q3+1:q4]       # brute force string parsing to get connection number
-    print line
-    print int(conn_num)
     return conn_num
 # from connection number, looks up hostname, from hostname finds the name of the lowest numbered guacamole connection name to that host
 # relies on the convention that the lowest numbered connection name will be the same as the openstack host name
