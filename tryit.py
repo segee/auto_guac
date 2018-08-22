@@ -44,7 +44,7 @@ def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/gu
 # Changed from searching for quotes alone to something slightly more robust
     q1 = line.find("User \"")
     q2 = line.find("\"",q1+6)  # move past User " and find the next quote
-    q3 = line.find("connection \"",q2+1) . # 
+    q3 = line.find("connection \"",q2+1)  # 
     q4 = line.find("\"",q3+12)             # 
     user = line[q1+6:q2]
     conn_num = line[q3+12:q4]       # brute force string parsing to get connection number
