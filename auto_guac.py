@@ -9,34 +9,12 @@ mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guaca
 
 print mysqlprops
 
-####################################
-#start of dbpassword code to read password from a local file
-#two alternatives (commented out) follow
-####################################
-filename="./dbpassword"
-os.chmod(filename, stat.S_IREAD)
-with open(filename) as fp:
-    dbpassword=fp.readline()
-    fp.close()
-os.chmod(filename,0)
+dbpassword=mysqlprops['mysql-password']
+print dbpassword
 
-##################################
-#end
-#################################
+exit(1)
 
-################################
-#prompt user for password
-###############################
-#dbpassword=raw_input("Please enter the mysql root password:  ")
-###############################
-#end
-###############################
-###############################
-#hard code password
-###############################
-#dbpassword="password"
-###############################
-#end
+
 ###############################
 connections={}  # dictionary to store openstack names and number of active connections
 logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
