@@ -50,7 +50,7 @@ def addconnection(line):
       if connections[connection_name] <= 0:
             connections[connection_name] = 1 # we just connected
         #    print("This is where I'd start machine %s" % str(connection_name))
-            rc=subprocess.call("./openstack_start_machine.sh '%s'" %connection_name , shell=True)
+            rc=subprocess.call("../Openstack_shell_scripts/openstack_start_machine.sh '%s'" %connection_name , shell=True)
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       # print connections[connection_name]
@@ -75,7 +75,7 @@ def every_minute():
              if connections[key] == -1:
                 connections[key]=0;
         #        print("This is where I'd shut off machine %s" % key)
-                rc=subprocess.call("./openstack_stop_machine.sh '%s'" %key, shell=True)
+                rc=subprocess.call("../Openstack_shell_scripts/openstack_stop_machine.sh '%s'" %key, shell=True)
              if connections[key] < -1 :
                 connections[key] = connections[key] + 1   
     else : # if line isn't x we are processing a line so give it 10 seconds and try again
