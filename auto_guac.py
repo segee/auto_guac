@@ -5,6 +5,10 @@ import mysql.connector
 import threading
 import os,sys,stat
 
+mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guacamole.properties') if (":" in line and not line.startswith("#") ))
+
+print mysqlprops
+
 ####################################
 #start of dbpassword code to read password from a local file
 #two alternatives (commented out) follow
