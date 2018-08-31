@@ -5,14 +5,7 @@ import mysql.connector
 import threading
 import os,sys,stat
 
-mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guacamole.properties') if (":" in line and not line.startswith("#") ))
 
-print mysqlprops
-
-dbpassword=mysqlprops['mysql-password']
-print dbpassword
-
-exit(1)
 
 
 ###############################
@@ -34,7 +27,8 @@ def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/gu
 # from connection number, looks up hostname, from hostname finds the name of the lowest numbered guacamole connection name to that host
 # relies on the convention that the lowest numbered connection name will be the same as the openstack host name
 def get_openstack_name(conn_num):
-    mydb=mysql.connector.connect(host="localhost",user="root",password=str(dbpassword),database="guacamole_db")
+    mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guacamole.properties') if (":" in line and not line.startswith("#") ))
+    mydb=mysql.connector.connect(host=mysqlprops['mysql-hostname'],user=mysqlprops['mysql-username'],password=mysqlprops['mysql-password'],database=mysqlprops['mysql-database'])
     mycursor=mydb.cursor()
     sql="select parameter_value from guacamole_connection_parameter where guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.connection_id= %d" % int(conn_num)
     # print (sql)
@@ -50,42 +44,42 @@ def get_openstack_name(conn_num):
 def addconnection(line):
       connectionnum=get_connection_id(line)
       connection_name=str(get_openstack_name(connectionnum))
-      print (connection_name)
+      # print (connection_name)
       if connection_name not in connections:  # first encounter
             connections[str(connection_name)] = 0 #initialize
       if connections[connection_name] <= 0:
             connections[connection_name] = 1 # we just connected
-            print("This is where I'd start machine %s" % str(connection_name))
+        #    print("This is where I'd start machine %s" % str(connection_name))
             rc=subprocess.call("./openstack_start_machine.sh '%s'" %connection_name , shell=True)
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
-      print connections[connection_name]
+      # print connections[connection_name]
 # Decrease the connection count. Set to -5 if fully disconnected (and time out from there)
 def removeconnection(line):
       connectionnum=get_connection_id(line)
       connection_name=str(get_openstack_name(connectionnum))
-      print (connection_name)
+      #print (connection_name)
       if connection_name not in connections:  # disconnected from a machine we don't know about??
             connections[str(connection_name)] = -5 #negative numbers mean shut off in the future
       if connections[connection_name] <=1:
             connections[connection_name] = -5 # connections gone
       else:
             connections[connection_name] = connections[connection_name] - 1  # if we have multiple connections, remove one
-      print connections[connection_name]
+      #print connections[connection_name]
 def every_minute():
     if line == 'x':
-        print('one minute')
+       # print('one minute')
         t=threading.Timer(60,every_minute)
         t.start()
         for key in connections:
              if connections[key] == -1:
                 connections[key]=0;
-                print("This is where I'd shut off machine %s" % key)
+        #        print("This is where I'd shut off machine %s" % key)
                 rc=subprocess.call("./openstack_stop_machine.sh '%s'" %key, shell=True)
              if connections[key] < -1 :
                 connections[key] = connections[key] + 1   
     else : # if line isn't x we are processing a line so give it 10 seconds and try again
-        print('ten seconds')
+       # print('ten seconds')
         t=threading.Timer(10,every_minute)
         t.start()
     
