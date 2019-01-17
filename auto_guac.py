@@ -4,8 +4,17 @@ import subprocess
 import mysql.connector
 import threading
 import os,sys,stat
+import sys
 
 
+##################################
+# Added by Forrest on 2018-10-04 #
+##################################
+OSSCRIPTSDIR = "../Openstack_shell_scripts"
+if (len(sys.argv) > 1):
+    OSSCRIPTSDIR = str(sys.argv[1])
+    
+##################################
 
 
 ###############################
@@ -50,7 +59,8 @@ def addconnection(line):
       if connections[connection_name] <= 0:
             connections[connection_name] = 1 # we just connected
         #    print("This is where I'd start machine %s" % str(connection_name))
-            rc=subprocess.call("../Openstack_shell_scripts/openstack_start_machine.sh '%s'" %connection_name , shell=True,cwd = '../Openstack_shell_scripts')
+            #rc=subprocess.call("../Openstack_shell_scripts/openstack_start_machine.sh '%s'" %connection_name , shell=True,cwd = '../Openstack_shell_scripts')
+            rc=subprocess.call("%s/openstack_start_machine.sh '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       # print connections[connection_name]
@@ -75,7 +85,9 @@ def every_minute():
              if connections[key] == -1:
                 connections[key]=0;
         #        print("This is where I'd shut off machine %s" % key)
-                rc=subprocess.call("../Openstack_shell_scripts/openstack_shelve_machine.sh '%s'" %key, shell=True,cwd='../Openstack_shell_scripts')
+            #    rc=subprocess.call("../Openstack_shell_scripts/openstack_shelve_machine.sh '%s'" %key, shell=True,cwd='../Openstack_shell_scripts')
+                rc=subprocess.call("%s/openstack_shelve_machine.sh '%s'" %(OSSCRIPTSDIR,key), shell=True,cwd=OSSCRIPTSDIR)
+
              if connections[key] < -1 :
                 connections[key] = connections[key] + 1   
     else : # if line isn't x we are processing a line so give it 10 seconds and try again
