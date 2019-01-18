@@ -1,0 +1,13 @@
+[Unit]
+Description=auto_guac_for_docker service
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory=/etc/auto_guac/auto_guac
+TimeoutStartSec=10
+Restart=always
+ExecStart=/etc/auto_guac/auto_guac/run_auto_guac_for_docker.sh
+
+[Install]
+WantedBy=default.target
