@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
-
+## Double # comments are for the 2021 revision
+## Triple # comments (###) are lines from the earlier version that were taken out
+## BES 12/30/2020
 import subprocess
 import mysql.connector
 import threading
@@ -48,9 +50,15 @@ def get_connection_id( line): # from http://mail-archives.apache.org/mod_mbox/gu
     user = line[q1+6:q2]
     conn_num = line[q3+12:q4]       # brute force string parsing to get connection number
     return conn_num
+
+## This is actually a simplification, the openstack scripts have been modified to allow ip addresses in addition to 
+## machine names.  This incarnation relies on the guacamole "hostname" to be the local (fixed) ip of the machine.
+## a nice side feature is that machines that shouldn't be auto_guac'ed can use a dns name, floating ip, or docker ip
+## 
 # from connection number, looks up hostname, from hostname finds the name of the lowest numbered guacamole connection name to that host
 # relies on the convention that the lowest numbered connection name will be the same as the openstack host name
-def get_openstack_name(conn_num):
+###def get_openstack_name(conn_num):
+def get_openstack_ip(conn_num):
 #    mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guacamole.properties') if (":" in line and not line.startswith("#") ))
 #    mydb=mysql.connector.connect(host=mysqlprops['mysql-hostname'],user=mysqlprops['mysql-username'],password=mysqlprops['mysql-password'],database=mysqlprops['mysql-database'])
 
@@ -60,16 +68,18 @@ def get_openstack_name(conn_num):
     print (sql)
     mycursor.execute(sql)
     myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
-    sql="select connection_name from guacamole_connection join guacamole_connection_parameter where guacamole_connection.connection_id = guacamole_connection_parameter.connection_id and  guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.parameter_value= '%s' order by guacamole_connection.connection_id" % str(myresult)
-    # print (sql)
-    mycursor.execute(sql)
-    myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
+###    sql="select connection_name from guacamole_connection join guacamole_connection_parameter where guacamole_connection.connection_id = guacamole_connection_parameter.connection_id and  guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.parameter_value= '%s' order by guacamole_connection.connection_id" % str(myresult)
+###    # print (sql)
+###    mycursor.execute(sql)
+###    myresult=str(mycursor.fetchone()[0]) # or can use mycursor.fetchall
+## the hostname (for an auto_guac'ed machine) should be the local ip address
     return myresult
 
 # Increase the connection count, or set to 1 if there are no current connections
 def addconnection(line):
       connectionnum=get_connection_id(line)
-      connection_name=str(get_openstack_name(connectionnum))
+###      connection_name=str(get_openstack_name(connectionnum))
+      connection_name=str(get_openstack_ip(connectionnum))
       # print (connection_name)
       if connection_name not in connections:  # first encounter
             connections[str(connection_name)] = 0 #initialize
@@ -77,14 +87,16 @@ def addconnection(line):
             connections[connection_name] = 1 # we just connected
         #    print("This is where I'd start machine %s" % str(connection_name))
             #rc=subprocess.call("../Openstack_shell_scripts/openstack_start_machine.sh '%s'" %connection_name , shell=True,cwd = '../Openstack_shell_scripts')
-            rc=subprocess.call("%s/openstack_start_machine.sh '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
+###            rc=subprocess.call("%s/openstack_start_machine.sh '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
+            rc=subprocess.call("%s/openstack_start_machine.sh i-l '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       # print connections[connection_name]
 # Decrease the connection count. Set to -30 if fully disconnected (and time out from there)
 def removeconnection(line):
       connectionnum=get_connection_id(line)
-      connection_name=str(get_openstack_name(connectionnum))
+###      connection_name=str(get_openstack_name(connectionnum))
+      connection_name=str(get_openstack_ip(connectionnum))
       #print (connection_name)
       if connection_name not in connections:  # disconnected from a machine we don't know about??
             connections[str(connection_name)] = -30 #negative numbers mean shut off in the future
