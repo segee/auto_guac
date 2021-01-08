@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 ## Double # comments are for the 2021 revision
 ## Triple # comments (###) are lines from the earlier version that were taken out
 ## BES 12/30/2020
@@ -33,7 +33,7 @@ print("sudo docker add -aG docker username");
 print("*************************************************************");
 props=subprocess.check_output("docker exec guacamole printenv |grep SQL",shell=True)
 
-mysqlprops = dict(line.strip().split('=') for line in props.splitlines())
+mysqlprops = dict(line.strip().split(b'=') for line in props.splitlines())
 
 #logfile=subprocess.Popen(['tail','-n','1','-F','/var/log/tomcat7/catalina.out'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)
 #line = logfile.stdout.readline() # throw away line already in log to look for new lines 
@@ -62,7 +62,7 @@ def get_openstack_ip(conn_num):
 #    mysqlprops = dict(line.strip().split(':') for line in open('/etc/guacamole/guacamole.properties') if (":" in line and not line.startswith("#") ))
 #    mydb=mysql.connector.connect(host=mysqlprops['mysql-hostname'],user=mysqlprops['mysql-username'],password=mysqlprops['mysql-password'],database=mysqlprops['mysql-database'])
 
-    mydb=mysql.connector.connect(host=mysqlprops['MYSQL_HOSTNAME'],user=mysqlprops['MYSQL_USER'],password=mysqlprops['MYSQL_PASSWORD'],database=mysqlprops['MYSQL_DATABASE'])
+    mydb=mysql.connector.connect(host=mysqlprops[b'MYSQL_HOSTNAME'].decode('utf-8'),user=mysqlprops[b'MYSQL_USER'].decode('utf-8'),password=mysqlprops[b'MYSQL_PASSWORD'].decode('utf-8'),database=mysqlprops[b'MYSQL_DATABASE'].decode('utf-8'))
     mycursor=mydb.cursor()
     sql="select parameter_value from guacamole_connection_parameter where guacamole_connection_parameter.parameter_name = 'hostname' and guacamole_connection_parameter.connection_id= %d" % int(conn_num)
     print (sql)
@@ -88,7 +88,7 @@ def addconnection(line):
         #    print("This is where I'd start machine %s" % str(connection_name))
             #rc=subprocess.call("../Openstack_shell_scripts/openstack_start_machine.sh '%s'" %connection_name , shell=True,cwd = '../Openstack_shell_scripts')
 ###            rc=subprocess.call("%s/openstack_start_machine.sh '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
-            rc=subprocess.call("%s/openstack_start_machine.sh i-l '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
+            rc=subprocess.call("%s/openstack_start_machine.sh -l '%s'" %(OSSCRIPTSDIR,connection_name) , shell=True,cwd = OSSCRIPTSDIR)
       else:
             connections[connection_name] = connections[connection_name] + 1  # if we have a connection, add one
       # print connections[connection_name]
@@ -115,7 +115,7 @@ def every_minute():
                 connections[key]=0;
         #        print("This is where I'd shut off machine %s" % key)
             #    rc=subprocess.call("../Openstack_shell_scripts/openstack_shelve_machine.sh '%s'" %key, shell=True,cwd='../Openstack_shell_scripts')
-                rc=subprocess.call("%s/openstack_shelve_machine.sh '%s'" %(OSSCRIPTSDIR,key), shell=True,cwd=OSSCRIPTSDIR)
+                rc=subprocess.call("%s/openstack_shelve_machine.sh -l '%s'" %(OSSCRIPTSDIR,key), shell=True,cwd=OSSCRIPTSDIR)
 
              if connections[key] < -1 :
                 connections[key] = connections[key] + 1   
